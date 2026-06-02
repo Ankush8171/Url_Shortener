@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Poppins',sans-serif;
+            min-height:100vh;
+            background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:40px 20px;
+            color:white;
+            overflow-x:hidden;
+        }
+
+        .container{
+            width:100%;
+            max-width:1000px;
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(15px);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:25px;
+            padding:40px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align:center;
+            font-size:3rem;
+            margin-bottom:30px;
+            background:linear-gradient(to right,#fff,#a5b4fc,#f9a8d4);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            animation:glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow{
+            from{
+                text-shadow:0 0 10px rgba(255,255,255,0.3);
+            }
+            to{
+                text-shadow:0 0 25px rgba(165,180,252,0.8);
+            }
+        }
+
+        .generated-url{
+            background:rgba(34,197,94,0.15);
+            border:1px solid rgba(34,197,94,0.4);
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:25px;
+            text-align:center;
+            word-break:break-word;
+        }
+
+        .generated-url a{
+            color:#86efac;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        form{
+            display:flex;
+            gap:15px;
+            margin-bottom:35px;
+            flex-wrap:wrap;
+        }
+
+        input{
+            flex:1;
+            padding:16px 20px;
+            border:none;
+            border-radius:12px;
+            outline:none;
+            background:rgba(255,255,255,0.12);
+            color:white;
+            font-size:1rem;
+        }
+
+        input::placeholder{
+            color:#d1d5db;
+        }
+
+        input:focus{
+            box-shadow:0 0 15px rgba(129,140,248,0.5);
+        }
+
+        button{
+            padding:16px 24px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);
+            color:white;
+            font-size:1rem;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:translateY(-3px);
+            box-shadow:0 10px 20px rgba(139,92,246,0.4);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            overflow:hidden;
+            border-radius:15px;
+            background:rgba(255,255,255,0.05);
+        }
+
+        thead{
+            background:rgba(255,255,255,0.1);
+        }
+
+        th{
+            padding:18px;
+            text-align:left;
+        }
+
+        td{
+            padding:18px;
+            border-top:1px solid rgba(255,255,255,0.08);
+        }
+
+        tr:hover{
+            background:rgba(255,255,255,0.05);
+        }
+
+        .short-link{
+            color:#93c5fd;
+            text-decoration:none;
+            font-weight:500;
+        }
+
+        .short-link:hover{
+            text-decoration:underline;
+        }
+
+        @media(max-width:768px){
+
+            .container{
+                padding:25px;
+            }
+
+            h1{
+                font-size:2.2rem;
+            }
+
+            form{
+                flex-direction:column;
+            }
+
+            button{
+                width:100%;
+            }
+
+            table{
+                display:block;
+                overflow-x:auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>✨ URL Shortener</h1>
+
+        <% if (locals.id) { %>
+
+            <div class="generated-url">
+
+                URL Generated Successfully 
+                <br><br>
+
+                <a 
+                   href="http://localhost:8001/url/<%= id %>" 
+                   target="_blank"
+                >
+                    http://localhost:8001/url/<%= id %>
+                </a>
+
+            </div>
+
+        <% } %>
+
+        <form method="POST" action="/url">
+
+            <input 
+                type="text"
+                name="url"
+                placeholder="https://example.com"
+            />
+
+            <button type="submit">
+                Generate
+            </button>
+
+        </form>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Short ID</th>
+                    <th>Redirect URL</th>
+                    <th>Clicks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <% urls.forEach((url,index) => { %>
+
+                    <tr>
+
+                        <td><%= index + 1 %></td>
+
+                        <td>
+                            <a 
+                               class="short-link"
+                               href="http://localhost:8001/url/<%= url.shortId %>"
+                               target="_blank"
+                            >
+                                <%= url.shortId %>
+                            </a>
+                        </td>
+
+                        <td><%= url.redirectURL %></td>
+
+                        <td><%= url.visitHistory.length %></td>
+
+                    </tr>
+
+                <% }) %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</body>
+</html>
