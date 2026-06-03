@@ -9,6 +9,9 @@ async function handleGenerateNewShortURL(req,res){
         err:'url is required'
     })
 
+
+    
+
     const shortID = nanoid(8);
     const allurl = await URL.find({});
     await URL.create({
